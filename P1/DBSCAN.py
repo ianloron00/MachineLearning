@@ -22,7 +22,7 @@ def findNeighbors(data, curr_point, radius):
   points = []
   for neighbor in range(len(data)):
     if np.linalg.norm(data.iloc[neighbor]-data.iloc[curr_point]) <= radius:
-      points.append(neighbor)      
+      points.append(neighbor)   
   return points
 
 def dbscan (data, epsilon, minP):
@@ -41,13 +41,14 @@ def dbscan (data, epsilon, minP):
     label[p] = C
 
     S = np.delete(N, np.where(N == p))
-    for q in range (len(S)):
+    for q in S:
       if label[q] == noise: label[q] = C
       if label[q] != undef: continue
       label[q] = C
       N = findNeighbors(data, q, epsilon)
       if len(N) >= minP:
-        S.append(N)
+        S = np.append(N,S)
+  print("end final loop") # didn't pass
   return S, C
 
 ### graphic - from towardsdatascience ###
@@ -55,6 +56,8 @@ def dbscan (data, epsilon, minP):
 def plotRes(data, clusterRes, clusterNum):
     nPoints = len(data)
     scatterColors = ['black', 'green', 'brown', 'red', 'purple', 'orange', 'yellow']
+    print("n. clusters: "+str(clusterNum)+" n. size S: "+str(len(clusterRes)))
+    print("S: "+str(clusterRes))
     for i in range(clusterNum):
         if (i==0):
             #Plot all noise point as blue
@@ -63,6 +66,7 @@ def plotRes(data, clusterRes, clusterNum):
             color = scatterColors[i % len(scatterColors)]
         x1 = [];  y1 = []
         for j in range(nPoints):
+          if len(clusterRes) > j:
             if clusterRes[j] == i:
                 x1.append(data[j, 0])
                 y1.append(data[j, 1])
@@ -77,8 +81,8 @@ train = pd.read_csv("cluster.dat", decimal=".", sep=' ', names=columns)
 
 
 #Set EPS and Minpoint
-epss = [5,10]
-minptss = [5,10]
+epss = [80,2]
+minptss = [5,6]
 # Find ALl cluster, outliers in different setting and print resultsw
 for eps in epss:
     for minpts in minptss:
