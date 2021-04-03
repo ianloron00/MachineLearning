@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 import math 
 import random
 import scipy.io as spio
+import collections
 
 
 # in this algorithm, it is necessary determine two variables: 
@@ -93,5 +94,5 @@ for eps in epss:
         print('number of cluster found: ' + str(cl-1))
         counter=collections.Counter(pointlabel)
         print(counter)
-        outliers  = pointlabel.count(0)
+        outliers  = np.count_nonzero(pointlabel == 0)
         print('numbrer of outliers found: '+str(outliers) +'\n')
