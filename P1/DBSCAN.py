@@ -10,6 +10,7 @@ import math
 import random
 import scipy.io as spio
 
+
 # in this algorithm, it is necessary determine two variables: 
 # the ratio distance among points (epsilon value) and the min number of points (minP) in a cluster (C). 
 
@@ -20,7 +21,7 @@ undef = 0
 def findNeighbors(data, curr_point, radius):
   points = []
   for neighbor in range(len(data)):
-    if np.linalg.norm(data[neighbor]-data[curr_point]) <= radius:
+    if np.linalg.norm(data.iloc[neighbor]-data.iloc[curr_point]) <= radius:
       points.append(neighbor)      
   return points
 
@@ -38,7 +39,8 @@ def dbscan (data, epsilon, minP):
 
     C = C+1
     label[p] = C
-    S = np.delete(N, p)
+
+    S = np.delete(N, np.where(N == p))
     for q in range (len(S)):
       if label[q] == noise: label[q] = C
       if label[q] != undef: continue
