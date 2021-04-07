@@ -8,14 +8,19 @@ import collections
 
 columns = ['coluna 1', 'coluna 2']
 train = pd.read_csv("cluster.dat", decimal=".", sep=' ', names=columns)
-eps = 0.01
-minpts = 5
+eps = 0.005
+minpts = 10
 
 def normalize(data):
   normData = data.copy()
   for i in range(data.shape[1]):
     normData.iloc[:,i] /= np.linalg.norm(data.iloc[:,i])
   return normData
+
+class CustomDBSCAN:
+  def __init__(self):
+    # 0 - undef, -1 - noise, -2 - border, -3 - core
+    self.label = 0
 
 # find the close points of the current point analysed. (Euclidian referential)
 def findNeighbors(data, curr_point, radius):
@@ -25,38 +30,54 @@ def findNeighbors(data, curr_point, radius):
       points.append(neighbor)   
   return points
 
-# Iteratively Color Neighbors
-def ICN(data, curr_points, radius, labels, Cluster):
-  for p in curr_points:
-    if labels[p] == 0:
-      Cluster = np.append(Cluster,p)
-      labels[p] = -1
-    N = findNeighbors(data,p,radius)
-    for q in N:
-      if labels[q] != 0: continue
-      labels[q] = -1
-      Cluster = np.append(Cluster,q)
-      curr_points.append(q)  
-  return labels, Cluster
+# Expand Clusters, starting from core points
+def ExpandClusters(data, adj_list, point_label, c, epsilon, newCluster):
 
-def DBSCAN(data, epsilon, minP):
+  for p in adj_list[c]:
+    # if it is a new point
+    if point_label[p] != -2:  
+      newCluster = ExpandClusters(data, adj_list, point_label, p, epsilon, newCluster)
+      newCluster = np.append(newCluster, p)
+      point_label[p] = -2
+  return newCluster
+
+
+def effDBSCAN(data, epsilon, minP):
   N = []
   S = [[]]
+  core_points = []
   C = 0
   point_label = np.zeros(len(data),dtype=int) 
+  adj_list = []
+  # adj_list = point_label.copy()
+  
+  # 1- find adjacent list of points, and find the core points.
   for p in range(len(data)):
     if point_label[p] != 0: continue
     N = findNeighbors(data, p, epsilon)
     if len(N) >= minP:
-      C = C+1
+      point_label[p] = -3
+      core_points.append(p)
+    else:
       point_label[p] = -1
-      S.append([p]) 
-      point_label, S[C] = ICN(data,N,epsilon,point_label,S[C])
-      # print('Cluster '+str(p)+' (size '+str(len(S[C]))+'): '+str(S[C]))
+    adj_list.append(N)
+
+  print('adj list:')  
+  for lin in range(len(adj_list)):
+    print(str(lin)+': ' + adj_list[lin])
+  # 2- Expand Clusters, starting from the core.
+  for c in core_points:
+    if point_label[c] == -3: # may change during ExpandClusters
+      C=C+1
+      point_label[c] = C
+      S.append([p])
+    S = ExpandClusters(data, adj_list, point_label, c, epsilon, S[C ])
+
   for o in range(len(point_label)):
-    if point_label[o] == 0:
+    if point_label[o] > -2:
       S[0] = np.append(S[0],o)
   return S
+  # print('Cluster '+str(p)+' (size '+str(len(S[C]))+'): '+str(S[C]))
 
 #Function to plot final result
 def plotRes(train, data, main_title):
@@ -81,12 +102,12 @@ def plotRes(train, data, main_title):
 
 def callClusters(train_data,eps,minpts):
   print('Set epsilon (normalized radius) = ' +str(eps)+ ', Min Points = '+str(minpts))
-  return DBSCAN(train_data,eps,minpts)
+  return effDBSCAN(train_data,eps,minpts)
 
 def callPlot(train_data,pointlabel, main_title):
   cl = len(pointlabel)
-  # for i in range (len(pointlabel)):
-  #   print("cluster "+str(i)+": "+str(pointlabel[i]))
+  for i in range (len(pointlabel)):
+    print("cluster "+str(i)+": "+str(pointlabel[i]))
   plotRes(train_data, pointlabel, main_title) 
   plt.show()
   print('number of cluster found: ' + str(cl-1))
@@ -99,6 +120,6 @@ def main():
   normTrain = normalize(train)
   pt_label = callClusters(normTrain,eps,minpts)
   callPlot(train,pt_label,
-           'Clusters division applying method DBSCAN (epsilon 0.1) - data from cluster.dat')
+          'TRIAL Clusters division applying method DBSCAN (epsilon 0.05) - data from cluster.dat')
 
 main()

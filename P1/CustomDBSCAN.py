@@ -3,8 +3,8 @@
 from sklearn import datasets
 import pandas as pd
 
-# n_samples = 1500
-# noisy_circles = datasets.make_circles(n_samples=n_samples, factor=.5, noise=.08)
+n_samples = 1500
+noisy_circles = datasets.make_circles(n_samples=n_samples, factor=.5, noise=.08)
 
 class CustomDBSCAN:
   def __init__(self):
