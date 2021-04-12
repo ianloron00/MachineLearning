@@ -115,6 +115,29 @@ def split(data, p=0.9):
     data_copy = data.iloc[np.random.permutation(len(data))]
     return data_copy[0:int(data_copy.shape[0]*p)], data_copy[int(data.shape[0]*p):]
 
+def plotGraphic(X_cl) :
+  # Tentando prever para que cluster pertence
+  # X_cl = db.predict(test)
+  print(X_cl)
+  dicionarioCores = {-1:'purple',0 : 'red', 1 : 'blue', 2: 'green', 3: 'pink', 4: 'yellow'}
+  label_color = [dicionarioCores[l] for l in X_cl]
+
+  c1 = 0
+  c2 = 1
+  labels = ['x', 'y']
+  c1label = labels[c1]
+  c2label = labels[c2]
+  title = c1label + ' x ' + c2label
+
+  plt.figure(figsize = (12,12))
+  plt.scatter(test.iloc[:,c1],test.iloc[:, c2], c=label_color, alpha=0.3)
+  plt.xlabel(c1label, fontsize=18)
+  plt.ylabel(c2label, fontsize=18)
+  plt.suptitle(title, fontsize=20)
+  plt.savefig(title + '.png')
+  plt.show()
+
+  print(datetime.datetime.now() - begin_time)
 
 # Calculo do tempo do algoritmo
 begin_time = datetime.datetime.now()
@@ -129,28 +152,10 @@ db = Dbscan(train, eps, minpts)
 
 #Treinando com os dados de treino
 db.fit()
-# Tentando prever para que cluster pertence
+
+# X_cl = train # db.fit()
+X_cl = train.iloc[1:,:]
+plotGraphic(X_cl)
+
 X_cl = db.predict(test)
-
-
-
-
-dicionarioCores = {-1:'purple',0 : 'red', 1 : 'blue', 2: 'green', 3: 'pink', 4: 'yellow'}
-label_color = [dicionarioCores[l] for l in X_cl]
-
-c1 = 0
-c2 = 1
-labels = ['x', 'y']
-c1label = labels[c1]
-c2label = labels[c2]
-title = c1label + ' x ' + c2label
-
-plt.figure(figsize = (12,12))
-plt.scatter(test.iloc[:,c1],test.iloc[:, c2], c=label_color, alpha=0.3)
-plt.xlabel(c1label, fontsize=18)
-plt.ylabel(c2label, fontsize=18)
-plt.suptitle(title, fontsize=20)
-plt.savefig(title + '.jpg')
-plt.show()
-
-print(datetime.datetime.now() - begin_time)
+plotGraphic(X_cl)
