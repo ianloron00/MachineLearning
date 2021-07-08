@@ -1,0 +1,10 @@
+bias -38.84315471562155
+#-of-scared-ghosts-1-step-away 10.11722384839429
+#-of-scared-ghosts-2-steps-away 32.20172217679547
+#-of-active-ghosts-1-step-away -93.69875613800455
+#-of-active-ghosts-2-steps-away -223.44767147448076
+closest-food -0.8671866006293802
+eats-food 37.79565090618523
+has-capsule-1-step-away 0.2079830029297603
+scaredTime-ghostDist 83.52604684956614
+run-to-catch-scared-ghost -0.001970928186856808
