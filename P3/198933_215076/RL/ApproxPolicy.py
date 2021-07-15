@@ -6,7 +6,6 @@ from RW_files import *
 import random,util,math,sys
 from game import Agent 
 
-# PacmanQAgent # QLAgent 
 myAgent= QLAgent
 
 class ApproximateQPolicy(myAgent):

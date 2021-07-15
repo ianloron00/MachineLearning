@@ -145,34 +145,6 @@ class QLAgent(Agent):
 
         self.n_steps=0
 
-
-        # Make sure we have this var
-        # if not 'episodeStartTime' in self.__dict__:
-        #     self.episodeStartTime = time.time()
-        # if not 'lastWindowAccumRewards' in self.__dict__:
-        #     self.lastWindowAccumRewards = 0.0
-        # self.lastWindowAccumRewards += state.getScore()
-
-        # NUM_EPS_UPDATE = 5
-        # if self.episodesSoFar % NUM_EPS_UPDATE == 0:
-        #     print ('Reinforcement Learning Status:')
-        #     windowAvg = self.lastWindowAccumRewards / float(NUM_EPS_UPDATE)
-        #     if self.episodesSoFar <= self.numTraining:
-        #         trainAvg = self.accumTrainRewards / float(self.episodesSoFar)
-        #         print ('\tCompleted %d out of %d training episodes' % (
-        #                self.episodesSoFar,self.numTraining))
-        #         print ('\tAverage Rewards over all training: %.2f' % (
-        #                 trainAvg))
-        #     else:
-        #         testAvg = float(self.accumTestRewards) / (self.episodesSoFar - self.numTraining)
-        #         print ('\tCompleted %d test episodes' % (self.episodesSoFar - self.numTraining))
-        #         print ('\tAverage Rewards over testing: %.2f' % testAvg)
-        #         print ('\tAverage Rewards for last %d episodes: %.2f'  % (
-        #             NUM_EPS_UPDATE,windowAvg))
-        #     print('\tEpisode took %.2f seconds' % (time.time() - self.episodeStartTime))
-        #     self.lastWindowAccumRewards = 0.0
-        #     self.episodeStartTime = time.time()
-
         
     def observeTransition(self, state,action,nextState,deltaReward):
         """

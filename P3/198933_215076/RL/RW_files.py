@@ -1,3 +1,4 @@
+# variable that allows or not reading and writing values from/to files.
 CAN_READ_WRITE_FILES=False
 
 def checkIfRead():
